@@ -1,0 +1,23 @@
+{
+  "name": "BitBytePuzzleBox",
+  "version": "0.0.1",
+  "description": "A Puzzle Box",
+  "main": "./dist/App.js",
+  "scripts": {
+    "compile": "tsc",
+    "start": "node dist/App.js",
+    "dev": "nodemon -e ts  --exec \"npm run compile && npm run start\""
+  },
+  "author": "Jeff Goergen",
+  "license": "ISC",
+  "dependencies": {
+    "nanotimer": "^0.3.14",
+    "typescript": "^2.7.2",
+    "onoff": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^9.4.6",
+    "@types/onoff": "0.0.27",
+    "nodemon": "^1.15.1"
+  }
+}
