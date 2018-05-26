@@ -11,9 +11,10 @@
   "author": "Jeff Goergen",
   "license": "ISC",
   "dependencies": {
+    "i2c-bus": "^3.2.0",
     "nanotimer": "^0.3.14",
-    "typescript": "^2.7.2",
-    "onoff": "^1.0.4"
+    "onoff": "^1.0.4",
+    "typescript": "^2.7.2"
   },
   "devDependencies": {
     "@types/node": "^9.4.6",
