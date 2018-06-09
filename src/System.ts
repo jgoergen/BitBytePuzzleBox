@@ -40,7 +40,7 @@ export default class System {
 
         setInterval(
             () => this.update(),
-            1000);
+            100);
     }
 
     // main update loop
@@ -48,8 +48,29 @@ export default class System {
     public async update():Promise<void> {
 
         this.touchStates = await this.touchInputs.getTouchStates();
-        console.log(this.touchStates);
-        this.display.buffer[Math.floor(Math.random() * 200)] = 0xFF;
-        this.display.display();
+
+        let touchBinary = 
+            this.touchStates
+            .slice(0, 7)
+            .map(
+                (touched) => touched ? "1" : "0")
+            .join("");
+
+        let char = 
+            String
+            .fromCharCode(
+                parseInt(
+                    touchBinary, 
+                    2))
+            .toUpperCase();
+
+        console.log(touchBinary, char);
+
+        this.display.setCursor(0, 0);
+        this.display.sendString("Puzzle Box!");
+        this.display.setCursor(2, 2);
+        this.display.sendString(touchBinary);
+        this.display.setCursor(10, 4);
+        this.display.sendString(char);
     }
 };
