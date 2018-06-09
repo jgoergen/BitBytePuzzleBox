@@ -1,4 +1,5 @@
 import * as fs from "fs";
+const exec = require('child_process').exec;
 import TouchInputs from "./TouchInputs";
 import Display from "./Display";
 import GPIO from "./GPIO";
@@ -14,7 +15,7 @@ export default class System {
 
     public async init(): Promise<void> {
 
-        console.log("Initializing");
+        console.log("System:: Initializing");
 
         this.gpio = new GPIO();
         this.display = new Display();
@@ -34,13 +35,37 @@ export default class System {
 
     public async start(): Promise<void> {
 
-        console.log("Starting");
+        console.log("System:: Starting");
 
         // start updates @ 5 fps
 
         setInterval(
             () => this.update(),
             100);
+    }
+
+    public async checkForPowerDown() {
+
+        if (await this.gpio.isPowerPressed()) {
+
+            console.log("System:: Powering down!");
+
+            this.display.clear();
+            this.display.setCursor(5, 5);
+            this.display.sendString("Powering down!");
+
+            let child = 
+            exec(
+                "sudo shutdown -h now", 
+                function (error: any, stdout: any, stderr: any) {
+
+                    console.log(`Shell:: stdout: '${stdout}'`);
+                    console.log(`Shell:: stderr: '${stderr}'`);
+
+                    if (error !== null)
+                        throw error;
+                });
+        }
     }
 
     // main update loop
@@ -55,6 +80,13 @@ export default class System {
             .map(
                 (touched) => touched ? "1" : "0")
             .join("");
+        
+        /*
+        console.log(
+            "System:: Updating", 
+            "power ", await this.gpio.isPowerPressed(), 
+            "touch ", this.touchStates.map((touched) => touched ? "1" : "0").join(""));
+        */
 
         let char = 
             String
@@ -64,13 +96,13 @@ export default class System {
                     2))
             .toUpperCase();
 
-        console.log(touchBinary, char);
-
         this.display.setCursor(0, 0);
         this.display.sendString("Puzzle Box!");
         this.display.setCursor(2, 2);
         this.display.sendString(touchBinary);
         this.display.setCursor(10, 4);
         this.display.sendString(char);
+
+        await this.checkForPowerDown();
     }
 };

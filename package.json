@@ -15,6 +15,7 @@
     "i2c-bus": "^3.2.0",
     "nanotimer": "^0.3.14",
     "onoff": "^1.0.4",
+    "pi-spi": "^1.0.2",
     "spi-device": "^2.0.2",
     "typescript": "^2.7.2"
   },
