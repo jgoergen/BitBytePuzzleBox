@@ -10,6 +10,8 @@ export default class System {
     touchInputs: TouchInputs;
     timer: any;
 
+    touchStates: Array<Boolean>;
+
     public async init(): Promise<void> {
 
         console.log("Initializing");
@@ -18,12 +20,19 @@ export default class System {
         this.display = new Display();
         this.touchInputs = new TouchInputs();
 
-        await this.gpio.init();
-        await this.display.init();
-        await this.touchInputs.init();
+        try {
+
+            await this.gpio.init();
+            await this.display.init();
+            await this.touchInputs.init();
+
+        } catch (e) {
+
+            throw e;
+        }
     }
 
-    public start(): void {
+    public async start(): Promise<void> {
 
         console.log("Starting");
 
@@ -31,15 +40,16 @@ export default class System {
 
         setInterval(
             () => this.update(),
-            200);
+            1000);
     }
 
     // main update loop
 
-    public update():void {
+    public async update():Promise<void> {
 
-        // these potentially need to be updated faster then once per beat
-
-        this.display.update();
+        this.touchStates = await this.touchInputs.getTouchStates();
+        console.log(this.touchStates);
+        this.display.buffer[Math.floor(Math.random() * 200)] = 0xFF;
+        this.display.display();
     }
 };
