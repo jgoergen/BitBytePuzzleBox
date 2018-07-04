@@ -127,9 +127,9 @@ export default class Display {
 
     sclkPin:number = 14; // sclk
     dinPin:number = 12; // mosi
-    dcPin:number = 23;
+    dcPin:number = 17;
     csPin:number = 10;
-    rstPin:number = 24;
+    rstPin:number = 27;
     // ce - ce0
 
     public buffer: Array<number>;

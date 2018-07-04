@@ -74,6 +74,12 @@ export default class System {
 
         this.touchStates = await this.touchInputs.getTouchStates();
 
+        this.touchStates.forEach(
+            (state: boolean, index: number) => {
+
+                this.gpio.setBitLED(index, state);
+            });
+
         let touchBinary = 
             this.touchStates
             .slice(0, 7)

@@ -3,15 +3,70 @@ const Gpio = require('onoff').Gpio;
 export default class GPIO {
 
     POWER_PIN: number = 26;
+    BIT_LED_1: number = 18;
+    BIT_LED_2: number = 23;
+    BIT_LED_3: number = 24;
+    BIT_LED_4: number = 25;
+    BIT_LED_5: number = 12;
+    BIT_LED_6: number = 16;
+    BIT_LED_7: number = 20;
+    BIT_LED_8: number = 21;
     power: any;
+    bitLED1: any;
+    bitLED2: any;
+    bitLED3: any;
+    bitLED4: any;
+    bitLED5: any;
+    bitLED6: any;
+    bitLED7: any;
+    bitLED8: any;
 
     public async init(): Promise<void> {
 
         this.power = new Gpio(this.POWER_PIN, "in", "both");
+
+        this.bitLED1 = new Gpio(this.BIT_LED_1, "out");
+        this.bitLED2 = new Gpio(this.BIT_LED_2, "out");
+        this.bitLED3 = new Gpio(this.BIT_LED_3, "out");
+        this.bitLED4 = new Gpio(this.BIT_LED_4, "out");
+        this.bitLED5 = new Gpio(this.BIT_LED_5, "out");
+        this.bitLED6 = new Gpio(this.BIT_LED_6, "out");
+        this.bitLED7 = new Gpio(this.BIT_LED_7, "out");
+        this.bitLED8 = new Gpio(this.BIT_LED_8, "out");
     }
 
     public async isPowerPressed() : Promise<boolean> {
 
         return await this.power.readSync() == 1;
+    }
+
+    public async setBitLED(index: number, state: boolean) : Promise<void> {
+
+        switch(index) {
+            case 1: 
+                this.bitLED1.writeSync(state);
+                break;
+            case 2: 
+                this.bitLED2.writeSync(state);
+                break;
+            case 3: 
+                this.bitLED3.writeSync(state);
+                break;
+            case 4: 
+                this.bitLED4.writeSync(state);
+                break;
+            case 5: 
+                this.bitLED5.writeSync(state);
+                break;
+            case 6: 
+                this.bitLED6.writeSync(state);
+                break;
+            case 7: 
+                this.bitLED7.writeSync(state);
+                break;
+            case 8: 
+                this.bitLED8.writeSync(state);
+                break;
+        }
     }
 };
