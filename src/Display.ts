@@ -298,7 +298,7 @@ export default class Display {
 
         // An SPI message is an array of one or more read+write transfers
         const message = [{
-            sendBuffer: new Buffer(data),
+            sendBuffer: Buffer.from(data),
             byteLength: data.length,
             speedHz: 4000000
         }];

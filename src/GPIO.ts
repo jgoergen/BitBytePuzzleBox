@@ -43,29 +43,31 @@ export default class GPIO {
     public async setBitLED(index: number, state: boolean) : Promise<void> {
 
         switch(index) {
+            case 0: 
+                this.bitLED1.writeSync(state ? 1 : 0);
+                break;
             case 1: 
-                this.bitLED1.writeSync(state);
+                this.bitLED2.writeSync(state ? 1 : 0);
                 break;
             case 2: 
-                this.bitLED2.writeSync(state);
+                this.bitLED3.writeSync(state ? 1 : 0);
                 break;
             case 3: 
-                this.bitLED3.writeSync(state);
+                this.bitLED4.writeSync(state ? 1 : 0);
                 break;
             case 4: 
-                this.bitLED4.writeSync(state);
+                this.bitLED5.writeSync(state ? 1 : 0);
                 break;
             case 5: 
-                this.bitLED5.writeSync(state);
+                this.bitLED6.writeSync(state ? 1 : 0);
                 break;
             case 6: 
-                this.bitLED6.writeSync(state);
+                this.bitLED7.writeSync(state ? 1 : 0);
                 break;
             case 7: 
-                this.bitLED7.writeSync(state);
+                this.bitLED8.writeSync(state ? 1 : 0);
                 break;
-            case 8: 
-                this.bitLED8.writeSync(state);
+            default:
                 break;
         }
     }

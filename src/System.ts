@@ -6,6 +6,8 @@ import GPIO from "./GPIO";
 
 export default class System {
 
+    EVENT_LOOP_SPEED: number = 100;
+
     gpio: GPIO;
     display: Display;
     touchInputs: TouchInputs;
@@ -41,7 +43,7 @@ export default class System {
 
         setInterval(
             () => this.update(),
-            100);
+            this.EVENT_LOOP_SPEED);
     }
 
     public async checkForPowerDown() {
@@ -90,10 +92,9 @@ export default class System {
         /*
         console.log(
             "System:: Updating", 
-            "power ", await this.gpio.isPowerPressed(), 
             "touch ", this.touchStates.map((touched) => touched ? "1" : "0").join(""));
         */
-
+       
         let char = 
             String
             .fromCharCode(
