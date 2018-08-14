@@ -46,6 +46,8 @@ export default class GPIO {
         this.setBitLED(6, true);
         this.setBitLED(7, true);
 
+        await this.buzz(100, 1);
+
         setTimeout(
             async () => { 
 
@@ -67,7 +69,7 @@ export default class GPIO {
 
     public async isPowerPressed() : Promise<boolean> {
 
-        return await this.power.readSync() == 1;
+        return await this.power.readSync() == 0;
     }
 
     public async buzz(count: number, wait: number) : Promise<void> {

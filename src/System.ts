@@ -55,7 +55,7 @@ export default class System {
             this.display.clear();
             this.display.setCursor(5, 5);
             this.display.sendString("Powering down!");
-
+            
             let child = 
             exec(
                 "sudo shutdown -h now", 
@@ -89,11 +89,10 @@ export default class System {
                 (touched) => touched ? "1" : "0")
             .join("");
         
-        /*
+        /**/
         console.log(
             "System:: Updating", 
             "touch ", this.touchStates.map((touched) => touched ? "1" : "0").join(""));
-        */
        
         let char = 
             String
