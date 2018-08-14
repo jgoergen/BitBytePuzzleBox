@@ -2,7 +2,7 @@ const Gpio = require('onoff').Gpio;
 
 export default class GPIO {
 
-    POWER_PIN: number = 26;
+    POWER_PIN: number = 17;
     BIT_LED_1: number = 18;
     BIT_LED_2: number = 23;
     BIT_LED_3: number = 24;
@@ -11,6 +11,7 @@ export default class GPIO {
     BIT_LED_6: number = 16;
     BIT_LED_7: number = 20;
     BIT_LED_8: number = 21;
+    BUZZER: number = 13;
     power: any;
     bitLED1: any;
     bitLED2: any;
@@ -20,6 +21,7 @@ export default class GPIO {
     bitLED6: any;
     bitLED7: any;
     bitLED8: any;
+    buzzer: any;
 
     public async init(): Promise<void> {
 
@@ -33,6 +35,34 @@ export default class GPIO {
         this.bitLED6 = new Gpio(this.BIT_LED_6, "out");
         this.bitLED7 = new Gpio(this.BIT_LED_7, "out");
         this.bitLED8 = new Gpio(this.BIT_LED_8, "out");
+        this.buzzer = new Gpio(this.BUZZER, "out");
+
+        this.setBitLED(0, true);
+        this.setBitLED(1, true);
+        this.setBitLED(2, true);
+        this.setBitLED(3, true);
+        this.setBitLED(4, true);
+        this.setBitLED(5, true);
+        this.setBitLED(6, true);
+        this.setBitLED(7, true);
+
+        setTimeout(
+            async () => { 
+
+                await this.finishInit(); 
+            }, 500);
+    }
+
+    public async finishInit(): Promise<void> {
+
+        this.setBitLED(0, false);
+        this.setBitLED(1, false);
+        this.setBitLED(2, false);
+        this.setBitLED(3, false);
+        this.setBitLED(4, false);
+        this.setBitLED(5, false);
+        this.setBitLED(6, false);
+        this.setBitLED(7, false);
     }
 
     public async isPowerPressed() : Promise<boolean> {
@@ -40,7 +70,24 @@ export default class GPIO {
         return await this.power.readSync() == 1;
     }
 
+    public async buzz(count: number, wait: number) : Promise<void> {
+
+        for (let i = 0; i < count; i++) {
+
+            await this.setBuzzer(true);
+            await this.setBuzzer(false);
+        }
+    }
+
+    public async setBuzzer(state: boolean) : Promise<void> {
+
+        this.buzzer.writeSync(state ? 1 : 0);
+    }
+
     public async setBitLED(index: number, state: boolean) : Promise<void> {
+
+        if (state)
+            await this.buzz(100, 1);
 
         switch(index) {
             case 0: 
