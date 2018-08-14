@@ -46,7 +46,8 @@ export default class GPIO {
         this.setBitLED(6, true);
         this.setBitLED(7, true);
 
-        await this.buzz(100, 1);
+        await this.buzz(20, 1);
+        await this.buzz(20, 1);
 
         setTimeout(
             async () => { 
@@ -89,7 +90,7 @@ export default class GPIO {
     public async setBitLED(index: number, state: boolean) : Promise<void> {
 
         if (state)
-            await this.buzz(100, 1);
+            await this.buzz(10, 1);
 
         switch(index) {
             case 0: 
