@@ -46,8 +46,7 @@ export default class GPIO {
         this.setBitLED(6, true);
         this.setBitLED(7, true);
 
-        await this.buzz(20, 1);
-        await this.buzz(20, 1);
+        await this.buzz(4, 0);
 
         setTimeout(
             async () => { 
@@ -73,13 +72,36 @@ export default class GPIO {
         return await this.power.readSync() == 0;
     }
 
-    public async buzz(count: number, wait: number) : Promise<void> {
+    public async buzz(count: number, wait: number = 0, rise: number = 0, drop: number = 0) : Promise<void> {
 
+        return;
+        
         for (let i = 0; i < count; i++) {
 
             await this.setBuzzer(true);
+
+            if (wait)
+                await this.sleep(wait / 2);
+
             await this.setBuzzer(false);
+
+            if (wait)
+                await this.sleep(wait / 2);
+
+            if (rise)
+                wait += rise;
+            
+            if (drop)
+                wait -= drop;
         }
+    }
+
+    public async sleep(ms: number) {
+
+        return new Promise(
+            (resolve: Function) => {
+                setTimeout(resolve, Math.floor(ms));
+            });
     }
 
     public async setBuzzer(state: boolean) : Promise<void> {
@@ -88,6 +110,8 @@ export default class GPIO {
     }
 
     public async setBitLED(index: number, state: boolean) : Promise<void> {
+
+        return;
 
         if (state)
             await this.buzz(10, 1);

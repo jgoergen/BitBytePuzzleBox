@@ -3,17 +3,17 @@ const exec = require('child_process').exec;
 import TouchInputs from "./TouchInputs";
 import Display from "./Display";
 import GPIO from "./GPIO";
+import Modes from "./Modes";
 
 export default class System {
 
-    EVENT_LOOP_SPEED: number = 100;
+    EVENT_LOOP_SPEED: number = 33;
 
     gpio: GPIO;
     display: Display;
     touchInputs: TouchInputs;
     timer: any;
-
-    touchStates: Array<Boolean>;
+    modes: Modes;
 
     public async init(): Promise<void> {
 
@@ -22,12 +22,14 @@ export default class System {
         this.gpio = new GPIO();
         this.display = new Display();
         this.touchInputs = new TouchInputs();
+        this.modes = new Modes();
 
         try {
 
             await this.gpio.init();
             await this.display.init();
             await this.touchInputs.init();
+            await this.modes.init(this.gpio, this.display);
 
         } catch (e) {
 
@@ -38,8 +40,6 @@ export default class System {
     public async start(): Promise<void> {
 
         console.log("System:: Starting");
-
-        // start updates @ 5 fps
 
         setInterval(
             () => this.update(),
@@ -74,40 +74,8 @@ export default class System {
 
     public async update():Promise<void> {
 
-        this.touchStates = await this.touchInputs.getTouchStates();
-
-        this.touchStates.forEach(
-            (state: boolean, index: number) => {
-
-                this.gpio.setBitLED(index, state);
-            });
-
-        let touchBinary = 
-            this.touchStates
-            .slice(0, 7)
-            .map(
-                (touched) => touched ? "1" : "0")
-            .join("");
-        
-        /**/
-        console.log(
-            "System:: Updating", 
-            "touch ", this.touchStates.map((touched) => touched ? "1" : "0").join(""));
-       
-        let char = 
-            String
-            .fromCharCode(
-                parseInt(
-                    touchBinary, 
-                    2))
-            .toUpperCase();
-
-        this.display.setCursor(0, 0);
-        this.display.sendString("Puzzle Box!");
-        this.display.setCursor(2, 2);
-        this.display.sendString(touchBinary);
-        this.display.setCursor(10, 4);
-        this.display.sendString(char);
+        this.modes.update(
+            await this.touchInputs.getTouchStates());
 
         await this.checkForPowerDown();
     }
