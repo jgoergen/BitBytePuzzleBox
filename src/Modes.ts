@@ -16,7 +16,6 @@ export default class Modes {
 
         this.gpio = gpio;
         this.display = display;
-        this.mode = 0;
         await this.setMode(0);
     }
 
@@ -40,7 +39,7 @@ export default class Modes {
         
         if (which != this.mode) {
             
-            console.log("Modes:: Changing mode to " + this.mode);
+            console.log("Modes:: Changing mode to " + which);
             this.mode = which;
             this.resetMode();
         }
@@ -67,7 +66,8 @@ export default class Modes {
 
     public async resetMode(): Promise<void> {
 
-        this.display.clear();
+        this.gpio.buzz(10, 1 + this.mode);
+        //this.display.clear();
 
         switch(this.mode) {
 
@@ -90,8 +90,6 @@ export default class Modes {
     }
 
     public async mode1Loop(touchStates: Array<boolean>): Promise<void> {
-
-        this.gpio.buzz(10, 1 + this.mode);
 
         let touchBinary = 
             touchStates
