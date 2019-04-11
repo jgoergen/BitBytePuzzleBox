@@ -11,4 +11,4 @@
 #tsc
 
 # start node
-node ./dist/App.js
+node /home/pi/Source/BitBytePuzzleBox/dist/App.js
