@@ -82,7 +82,7 @@ export default class TouchInputs {
         }
         
         // Set threshold for touch and release to default values.
-        this.setThresholds(12, 6);
+        await this.setThresholds(9, 6);
         
         // Configure baseline filtering control registers.
         await this.writeByte(this.MPR121_MHDR, 0x01);
@@ -127,8 +127,8 @@ export default class TouchInputs {
         // Set the touch and release register value for all the inputs.
         for(let i = 0; i < 12; i++) {
 
-            this.writeByte(this.MPR121_TOUCHTH_0 + 2 * i, touch);
-            this.writeByte(this.MPR121_RELEASETH_0 + 2 * i, release);
+            await this.writeByte(this.MPR121_TOUCHTH_0 + 2 * i, touch);
+            await this.writeByte(this.MPR121_RELEASETH_0 + 2 * i, release);
         }
     }
 
@@ -161,13 +161,45 @@ export default class TouchInputs {
         return bl << 2;
     }
 
-    public async getTouchStates(): Promise<Array<Boolean>> {
+    private async remapTouchStates(actualStates: Array<boolean>): Promise<Array<boolean>> {
+
+        /* actual touch input mapping
+        0 t8
+        1 t1
+        2 t2
+        3 t3
+        4 t5
+        5 t4
+        6 t6
+        7 t7
+        8 r2
+        9 l1
+        10 r1
+        11 l2 */
+
+        return [
+            actualStates[1],
+            actualStates[2],
+            actualStates[3],
+            actualStates[5],
+            actualStates[4],
+            actualStates[6],
+            actualStates[7],
+            actualStates[0],
+            actualStates[9],
+            actualStates[11],
+            actualStates[10],
+            actualStates[8]
+        ];
+    }
+
+    public async getTouchStates(): Promise<Array<boolean>> {
 
         // Return array of true false where each index is a pin and bool is whether it's touched
 
         let t = await this.readWord(this.MPR121_TOUCHSTATUS_L);
 
-        return [
+        return await this.remapTouchStates([
             (t & (1 << 0)) > 0, 
             (t & (1 << 1)) > 0, 
             (t & (1 << 2)) > 0, 
@@ -180,10 +212,10 @@ export default class TouchInputs {
             (t & (1 << 9)) > 0, 
             (t & (1 << 10)) > 0, 
             (t & (1 << 11)) > 0
-        ];
+        ]);
     }
 
-    public async isTouched(pin: number): Promise<Boolean> {
+    public async isTouched(pin: number): Promise<boolean> {
 
         // Return True if the specified pin is being touched, otherwise returns False.
         
@@ -193,7 +225,7 @@ export default class TouchInputs {
         if (pin > 11)
             pin = 11;
 
-        let t: Array<Boolean> = await this.getTouchStates();
+        let t: Array<boolean> = await this.getTouchStates();
         return t[pin];
     }
 
